@@ -67,7 +67,7 @@ class Settings:
         clean()
         start = 1
         while start != 0:
-            print(f"1 - Recreate person\n2 - Edit person\n3 - Choose work\n4 - Close")
+            print(f"1 - Recreate person\n2 - Edit person\n3 - Choose work\n4 - Save\n5 - Load\n6 - Close")
             try:
                 choiceS = int(input())
                 match choiceS:
@@ -75,13 +75,22 @@ class Settings:
                         main()
                     case 2:
                         Settings.EditPerson()
+                        break
                     case 3:
                         Settings.ChooseWork()
-                    case 4:
                         break
+                    case 4:
+                        Settings.Save()
+                        break
+                    case 5:
+                        Settings.Load()
+                        break
+                    case 6:
+                        break
+                break
             except:
                 clean
-                continue
+                break
 
     def CreatePerson():
         global Player
@@ -93,7 +102,6 @@ class Settings:
         except:
             pass
         Player = Person(name, age)
-        clean()
 
     def EditPerson():
         clean()
@@ -103,9 +111,16 @@ class Settings:
             age = int(input("Enter age: "))
         except:
             pass
-        Player.name = name
-        Player.age = age
-        clean()
+        if "*" in name:
+            Player.name = "NoName"
+        elif name == "":
+            Player.name = "NoName"
+        else:
+            Player.name = name
+        if 1 < age < 100:
+            Player.age = age
+        else:
+            Player.age = 18
 
     def ChooseWork():
         clean()
@@ -113,7 +128,6 @@ class Settings:
             choiceWork = int(input("1 - Programmist\n2 - Designer\n3 - Taxi\n"))
         except:
             clean()
-            pass
         match choiceWork:
             case 1:
                 Work.programmist()
@@ -121,29 +135,28 @@ class Settings:
                 Work.designer()
             case 3:
                 Work.taxi()
-        clean()
 
-def Save():
-    save = open("save.txt", "w")
-    save.write(f"{Player.name}*{Player.age}*{Player.balance}*{Player.work}*{Player.income}")
-    save.close()
+    def Save():
+        save = open("save.txt", "w")
+        save.write(f"{Player.name}*{Player.age}*{Player.balance}*{Player.work}*{Player.income}")
+        save.close()
 
-def Load():
-    global Player
-    Player = Person("", 0)
-    try:
-        load = open("save.txt", "r")
-    except:
-        clean()
-        main()
-    s = load.read()
-    data = s.split("*")
-    Player.name = str(data[0])
-    Player.age = int(data[1])
-    Player.balance = int(data[2])
-    Player.work = str(data[3])
-    Player.income = int(data[4])
-    load.close()
+    def Load():
+        global Player
+        Player = Person("", 0)
+        try:
+            load = open("save.txt", "r")
+        except:
+            clean()
+            main()
+        s = load.read()
+        data = s.split("*")
+        Player.name = str(data[0])
+        Player.age = int(data[1])
+        Player.balance = int(data[2])
+        Player.work = str(data[3])
+        Player.income = int(data[4])
+        load.close()
 
 def main():
     start = 1
@@ -153,7 +166,7 @@ def main():
         clean()
         main()
     if check == 1:
-        Load()
+        Settings.Load()
     elif check == 0:
         Settings.CreatePerson()
     else:
@@ -163,7 +176,7 @@ def main():
         try:
             clean()
             print(Player.show())
-            choiceM = int(input("1 - Work\n2 - Settings\n3 - Save\n4 - Load\n5 - Exit\n"))
+            choiceM = int(input("1 - Work\n2 - Settings\n3 - Exit\n"))
         except:
             continue
         match choiceM:
@@ -172,11 +185,7 @@ def main():
             case 2:
                 Settings()
             case 3:
-                Save()
-            case 4:
-                Load()
-            case 5:
-                Save()
+                Settings.Save()
                 break
 
 main()
