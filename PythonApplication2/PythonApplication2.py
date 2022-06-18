@@ -72,7 +72,7 @@ class Settings:
                 choiceS = int(input())
                 match choiceS:
                     case 1:
-                        main()
+                        Settings.CreatePerson()
                     case 2:
                         Settings.EditPerson()
                         break
@@ -146,32 +146,36 @@ class Settings:
         Player = Person("", 0)
         try:
             load = open("save.txt", "r")
+            s = load.read()
+            data = s.split("*")
+            Player.name = str(data[0])
+            Player.age = int(data[1])
+            Player.balance = int(data[2])
+            Player.work = str(data[3])
+            Player.income = int(data[4])
+            load.close()
         except:
             clean()
-            main()
-        s = load.read()
-        data = s.split("*")
-        Player.name = str(data[0])
-        Player.age = int(data[1])
-        Player.balance = int(data[2])
-        Player.work = str(data[3])
-        Player.income = int(data[4])
-        load.close()
+            Start()
 
-def main():
-    start = 1
+def Start():
     try:
         check = int(input("Load save? (0 | 1)\n"))
     except:
         clean()
-        main()
+        Start()
     if check == 1:
         Settings.Load()
+        Menu()
     elif check == 0:
         Settings.CreatePerson()
+        Menu()
     else:
         clean()
-        main()
+        Start()
+
+def Menu():
+    start = 1
     while start != 0:
         try:
             clean()
@@ -188,4 +192,4 @@ def main():
                 Settings.Save()
                 break
 
-main()
+Start()
