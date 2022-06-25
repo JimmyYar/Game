@@ -1,8 +1,13 @@
 Player = ""
+Bank = 0
 
+from datetime import datetime
+from threading import Thread
 import os
+import time
+import keyboard
 
-def clean(): os.system('cls' if os.name == 'nt' else 'clear')
+clean = lambda: os.system('cls')
 
 class Person:
      normal_name = "NoName"
@@ -158,6 +163,29 @@ class Settings:
             clean()
             Start()
 
+def TimeNow():
+    now = datetime.now()
+    sec = int("{}".format(now.second))
+    minut = int("{}".format(now.minute))
+    chas = int("{}".format(now.hour))
+    sec = sec + minut * 60 + chas * 3600
+    return sec
+
+class Business():
+    def __init__():
+        pass
+    
+    def bisn():
+        global Bank
+        while True:
+            Bank += 3
+            time.sleep(1)
+
+    def Take():
+        global Bank
+        Player.balance += Bank
+        Bank = 0
+
 def Start():
     try:
         check = int(input("Load save? (0 | 1)\n"))
@@ -180,16 +208,22 @@ def Menu():
         try:
             clean()
             print(Player.show())
-            choiceM = int(input("1 - Work\n2 - Settings\n3 - Exit\n"))
+            choiceM = int(input(f"1 - Work\n2 - Business({Bank}$)\n3 - Settings\n4 - Exit\n5 - Take money from business\n"))
         except:
             continue
         match choiceM:
             case 1:
                 Work()
             case 2:
-                Settings()
+                M = Thread(target = Business.bisn)
+                M.start()
             case 3:
+                Settings()
+            case 4:
                 Settings.Save()
                 break
+            case 5:
+                Business.Take()
 
-Start()
+Starting = Thread(target = Start)
+Starting.start()
