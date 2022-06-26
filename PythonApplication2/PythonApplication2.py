@@ -144,26 +144,42 @@ class Settings:
         save = open("save.txt", "w")
         save.write(f"{Player.name}*{Player.age}*{Player.balance}*{Player.work}*{Player.income}*{Player.dps}*{Player.business}")
         save.close()
+        code = open("code.txt", "w")
+        x = Player.age + Player.balance + Player.income + Player.dps + Player.business
+        code.write(f"{x:0x}")
+        code.close()
 
     def Load():
         global Player
         Player = Person("", 0)
         try:
             load = open("save.txt", "r")
+            code = open("code.txt", "r")
+            x = code.read()
             s = load.read()
             data = s.split("*")
-            Player.name = str(data[0])
-            Player.age = int(data[1])
-            Player.balance = int(data[2])
-            Player.work = str(data[3])
-            Player.income = int(data[4])
-            Player.dps = int(data[5])
-            Player.business = int(data[6])
-            if Player.business == 1:
-                M.start()
-            load.close()
+            check = int(data[1]) + int(data[2]) + int(data[4]) + int(data[5]) + int(data[6])
+            if check == int(x, 16):
+                Player.name = str(data[0])
+                Player.age = int(data[1])
+                Player.balance = int(data[2])
+                Player.work = str(data[3])
+                Player.income = int(data[4])
+                Player.dps = int(data[5])
+                Player.business = int(data[6])
+                if Player.business == 1:
+                    M.start()
+                load.close()
+                code.close()
+            else:
+                load.close()
+                code.close()
+                clean()
+                print(" Error: Don't edit save, I know it!\n")
+                return 0
         except:
             clean()
+            print(" Error: Corrupted save :(\n")
             return 0 # Settings
 
 def TimeNow():
