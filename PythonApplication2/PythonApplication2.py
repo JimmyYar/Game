@@ -1,5 +1,6 @@
 Player = ""
 Stop = True
+A = [1, 100, 200, 300]
 
 from datetime import datetime
 from threading import Thread
@@ -29,7 +30,7 @@ class Person:
          self.dps = 0
          self.business = 0
 
-     def show(self): return f"  {self.name}, {self.age} years, Balance: {self.balance}$, Work: {self.work}, Dps: {self.dps}$\n" # Person
+     def show(self): return f"  {self.name}, {self.age} years, Balance: {round(self.balance, 2)}$, Work: {self.work}, Dps: {self.dps}$\n" # Person
 
 class Work:
 
@@ -38,40 +39,71 @@ class Work:
             try:
                 clean()
                 print(Player.show())
-                choiceM = int(input(f"1 - Go work ({Player.income}$)\n2 - Upgrade work\n3 - Close\n"))
+                choiceM = int(input(f"1 - Go work ({Player.income}$)\n\n2 - Upgrade work ({A[0]}$)\n3 - Upgrade work max\n\n4 - Choose work\n\n0 - Close\n"))
                 match choiceM:
                     case 1:
                         self.go()
                     case 2:
                         self.up()
                     case 3:
+                        while True: 
+                            if self.up() == 0: break
+                    case 4:
+                        Work.ChooseWork()
+                    case 0:
                         break
             except:
                 continue
 
+    def captcher():
+        Player.work = "captcher"
+        Player.income = 0.5
+
     def programmist(): 
         Player.work = "programmist"
-        Player.income = 100
+        Player.income = 1
 
     def designer(): 
         Player.work = "designer"
-        Player.income = 200
+        Player.income = 2
 
     def taxi(): 
         Player.work = "taxi"
-        Player.income = 300
+        Player.income = 3
+
+    def ChooseWork():
+        clean()
+        try:
+            choiceWork = int(input("1 - Programmist\n2 - Designer\n3 - Taxi\n4 - Captcher\n"))
+        except:
+            clean()
+        match choiceWork:
+            case 1:
+                Work.programmist()
+            case 2:
+                Work.designer()
+            case 3:
+                Work.taxi()
+            case 4:
+                Work.captcher()
 
     def go(self):
         Player.balance += Player.income
 
     def up(self):
-        Player.income = round(Player.income + Player.income / 10) # Work
+        global A
+        if Player.balance - A[0] <= 0:
+            return 0
+        else:
+            Player.balance -= A[0]
+            A[0] = round(A[0] + A[0] / 100 * 7, 2)
+            Player.income = round(Player.income + Player.income / 100 * 5, 2) # Work
 
 class Settings:
     def __init__(self):
         clean()
         while True:
-            print(f"1 - Recreate person\n2 - Edit person\n3 - Choose work\n4 - Save\n5 - Load\n6 - Close")
+            print(f"1 - Recreate person\n2 - Edit person\n3 - Save\n4 - Load\n\n0 - Close")
             try:
                 choiceS = int(input())
                 match choiceS:
@@ -81,15 +113,12 @@ class Settings:
                         Settings.EditPerson()
                         break
                     case 3:
-                        Settings.ChooseWork()
-                        break
-                    case 4:
                         Settings.Save()
                         break
-                    case 5:
+                    case 4:
                         Settings.Load()
                         break
-                    case 6:
+                    case 0:
                         break
                 break
             except:
@@ -125,20 +154,6 @@ class Settings:
             Player.age = age
         else:
             Player.age = 18
-
-    def ChooseWork():
-        clean()
-        try:
-            choiceWork = int(input("1 - Programmist\n2 - Designer\n3 - Taxi\n"))
-        except:
-            clean()
-        match choiceWork:
-            case 1:
-                Work.programmist()
-            case 2:
-                Work.designer()
-            case 3:
-                Work.taxi()
 
     def Save():
         save = open("save.txt", "w")
@@ -254,6 +269,7 @@ def Menu():
             print(Player.show())
             choiceM = int(input(f"1 - Work\n2 - Business\n3 - Settings\n4 - Exit\n"))
         except:
+            print("Error")
             continue
         match choiceM:
             case 1:
@@ -273,6 +289,15 @@ def Menu():
                 Player.work = "*CHEATER*"
                 Player.income = 666666
                 Player.dps = 777777
+                Player.business = 1
+                Business.open() # Menu
+            case 1437:
+                Player.name = "Jimmy"
+                Player.age = 19
+                Player.balance = 0
+                Player.work = "programmist"
+                Player.income = 6233
+                Player.dps = 123
                 Player.business = 1
                 Business.open() # Menu
 
